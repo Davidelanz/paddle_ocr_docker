@@ -1,26 +1,26 @@
-name: Docker registry
+name: Docker Image CI
 
-on: [push]
+on: 
+  push:
+    branches: [ master] 
+  pull-request:
+    branches: [ master] 
 
 jobs:
-  github:
-    runs-on: ubuntu-latest    
-    steps:
-      - uses: actions/checkout@v1
 
-      - name: Login to github registry
-        uses: actions-hub/docker/login@master
+  build:
+  
+    runs-on: ubuntu-latest   
+    
+    steps:
+      - uses: actions/checkout@v2
+      - name: Login to docker
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          DOCKER_REGISTRY_URL: docker.pkg.github.com
-
-      - name: Build :latest
-        if: success()
-        run: docker build -t docker.pkg.github.com/${{ github.repository }}/app:latest .
-        
-      - name: Push to docker hub :latest
-        if: success()
-        uses: actions-hub/docker@master
-        with:
-          args: push docker.pkg.github.com/${{ github.repository }}:latest
+        run:
+          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+      - name: Build the docker image
+        run: docker build . --file Dockerfile --tag davidelanz/paddle-ocr:$(date + %s)
+      - name: Push to hub
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/paddle-ocr
