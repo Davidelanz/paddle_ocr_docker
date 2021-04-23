@@ -19,6 +19,8 @@ jobs:
         run:
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
       - name: Build the docker image
-        run: docker build . --file Dockerfile --tag davidelanz/paddle-ocr:$(date + %s)
-      - name: Push to hub
+        run: docker build . --file Dockerfile --tag davidelanz/paddle-ocr:latest
+      - name: Push Image to hub
         run: docker push ${{ secrets.DOCKER_USERNAME }}/paddle-ocr
+      - name: Push README to hub        
+        run: docker pushrm ${{ secrets.DOCKER_USERNAME }}/paddle-ocr
