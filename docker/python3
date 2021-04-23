@@ -1,5 +1,5 @@
-#Download base image ubuntu 20.04
-FROM ubuntu:20.04
+#Download base image ubuntu 18.04
+FROM ubuntu:18.04
 
 WORKDIR /workspace
 
@@ -19,6 +19,7 @@ RUN conda update -y conda
 
 # Python packages from anaconda
 # RUN conda install anaconda -c anaconda -y 
+# RUN conda install anaconda -c anaconda -y 
 
 # =============================================
 # SETUP PADDLE
@@ -26,11 +27,10 @@ RUN conda update -y conda
 
 RUN apt-get update
 RUN apt-get install ffmpeg libsm6 libxext6  -y
-# Still does not work on Python 3.8
-# RUN conda install opencv -y
+RUN conda install opencv -y
 # FIX: https://stackoverflow.com/a/64221557/13975476
-RUN conda update -n base -c defaults conda
-RUN conda install -c conda-forge opencv -y
+#RUN conda update -n base -c defaults conda
+#RUN conda install -c conda-forge opencv -y
 RUN conda install paddlepaddle -c paddle -y
 RUN pip install "paddleocr>=2.0.6"
 
