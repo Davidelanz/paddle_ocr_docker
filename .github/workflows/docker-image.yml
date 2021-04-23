@@ -12,15 +12,25 @@ jobs:
     
     steps:
       - uses: actions/checkout@v2
-      - name: Login to docker
+      - name: Login to Dockerhub
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run:
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-      - name: Build the docker image
-        run: cd docker && docker build . --file Dockerfile --tag davidelanz/paddle-ocr:latest
-      - name: Push Image to hub
+      - name: Build the Docker Image
+        run: cd docker \
+          && docker build . --file pytorch:1.6.0-cuda10.1-cudnn7-devel --tag davidelanz/paddle-ocr:pytorch:1.6.0-cuda10.1-cudnn7-devel \
+          && docker build . --file pytorch:1.6.0-cuda10.2-cudnn7-devel --tag davidelanz/paddle-ocr:pytorch:1.6.0-cuda10.2-cudnn7-devel
+      - name: Push Image to Dockerhub
         run: docker push ${{ secrets.DOCKER_USERNAME }}/paddle-ocr
+      - name: Add Dockerhub Description
+        uses: peter-evans/dockerhub-description@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          repository: peterevans/dockerhub-description
+          short-description: ${{ github.event.repository.description }}
+          readme-filepath: ./README.md
       - name: Push README to hub        
         run: docker pushrm ${{ secrets.DOCKER_USERNAME }}/paddle-ocr
