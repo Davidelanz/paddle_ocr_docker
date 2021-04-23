@@ -19,8 +19,8 @@ jobs:
         run:
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
       - name: Build the Docker Image
-        run: cd docker \
-          && docker build . --file pytorch:1.6.0-cuda10.1-cudnn7-devel --tag davidelanz/paddle-ocr:pytorch:1.6.0-cuda10.1-cudnn7-devel \
+        run: cd docker
+          && docker build . --file pytorch:1.6.0-cuda10.1-cudnn7-devel --tag davidelanz/paddle-ocr:pytorch:1.6.0-cuda10.1-cudnn7-devel 
           && docker build . --file pytorch:1.6.0-cuda10.2-cudnn7-devel --tag davidelanz/paddle-ocr:pytorch:1.6.0-cuda10.2-cudnn7-devel
       - name: Push Image to Dockerhub
         run: docker push ${{ secrets.DOCKER_USERNAME }}/paddle-ocr
