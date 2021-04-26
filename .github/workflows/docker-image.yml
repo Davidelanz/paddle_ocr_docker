@@ -1,11 +1,11 @@
 name: Docker Image CI
 
-on: 
+on:
   push:
-    branches: [main] 
-    
+    branches: [main]
+
 jobs:
-  PushContainerReadme:
+  PushReadmeJob:
     runs-on: ubuntu-latest
     name: Push README to Docker Hub
     steps:
@@ -19,33 +19,44 @@ jobs:
         with:
           destination_container_repo: davidelanz/paddle-ocr
           provider: dockerhub
-          short_description: 'Dockerfile for PaddleOCR >= 2.0.6'
-          readme_file: 'README.md'
-        
-  build-cpu:
+          short_description: "Dockerfile for PaddleOCR >= 2.0.6"
+          readme_file: "README.md"
+
+  BuildPushImagesJob:
     runs-on: ubuntu-latest
-    name: Build CPU Image
+    name: Build and push images to Docker Hub
     steps:
-      - uses: actions/checkout@v2
-      - name: Build and push Image to Dockerhub
+      - name: git checkout
+        uses: actions/checkout@v2
+
+      - name: CPU
         env:
           DOCKER_USER: davidelanz
           DOCKER_PASS: ${{ secrets.DOCKER_PASSWORD }}
-        run:
-          docker login -u $DOCKER_USER -p $DOCKER_PASS
-          && cd docker && docker build . --file python3 --tag davidelanz/paddle-ocr:cpu
+        run: docker login -u $DOCKER_USER -p $DOCKER_PASS
+          && docker build . --file docker/cpu --tag davidelanz/paddle-ocr:cpu
           && docker push davidelanz/paddle-ocr:cpu
-        
-  build-gpu-cuda10_1-cudnn7:
-    runs-on: ubuntu-latest
-    name: Build GPU cuda10.1 cudnn7 Image
-    steps:
-      - uses: actions/checkout@v2
-      - name: Build and push Image to Dockerhub
+
+      - name: GPU [CUDA 10.0, CUDNN 7]
         env:
           DOCKER_USER: davidelanz
           DOCKER_PASS: ${{ secrets.DOCKER_PASSWORD }}
-        run:
-          docker login -u $DOCKER_USER -p $DOCKER_PASS
-          && cd docker && docker build . --file pytorch:1.6.0-cuda10.1-cudnn7-devel --tag davidelanz/paddle-ocr:gpu-cuda10.1-cudnn7
-          && docker push davidelanz/paddle-ocr:gpu-cuda10.1-cudnn7
+        run: docker login -u $DOCKER_USER -p $DOCKER_PASS
+          && docker build . --file docker/cuda10.0-cudnn7-devel --tag davidelanz/paddle-ocr:gpu-cuda10.0-cudnn7-devel
+          && docker push davidelanz/paddle-ocr:gpu-cuda10.0-cudnn7-devel
+
+      - name: GPU [CUDA 10.1, CUDNN 7]
+        env:
+          DOCKER_USER: davidelanz
+          DOCKER_PASS: ${{ secrets.DOCKER_PASSWORD }}
+        run: docker login -u $DOCKER_USER -p $DOCKER_PASS
+          && docker build . --file docker/cuda10.1-cudnn7-devel --tag davidelanz/paddle-ocr:gpu-cuda10.1-cudnn7-devel
+          && docker push davidelanz/paddle-ocr:gpu-cuda10.1-cudnn7-devel
+
+      - name: GPU [CUDA 11.0, CUDNN 8]
+        env:
+          DOCKER_USER: davidelanz
+          DOCKER_PASS: ${{ secrets.DOCKER_PASSWORD }}
+        run: docker login -u $DOCKER_USER -p $DOCKER_PASS
+          && docker build . --file docker/cuda11.0-cudnn8-devel --tag davidelanz/paddle-ocr:gpu-cuda11.0-cudnn8-devel
+          && docker push davidelanz/paddle-ocr:gpu-cuda11.0-cudnn8-devel

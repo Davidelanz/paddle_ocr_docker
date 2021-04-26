@@ -1,0 +1,42 @@
+FROM ubuntu:18.04
+
+# =============================================
+# SETUP BASIC
+# =============================================
+
+WORKDIR /workspace
+
+# System packages 
+RUN apt-get update
+
+# GCC
+RUN apt-get install -y python3-dev
+RUN apt-get install -y libevent-dev
+RUN apt-get install -y gcc
+
+# =============================================
+# SETUP CONDA
+# =============================================
+
+# Install miniconda to /miniconda
+RUN apt-get install -y curl
+RUN curl -LO http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+RUN bash Miniconda3-latest-Linux-x86_64.sh -p /miniconda -b
+RUN rm Miniconda3-latest-Linux-x86_64.sh
+ENV PATH=/miniconda/bin:${PATH}
+RUN conda install python=3.7 -y
+RUN conda update -y conda
+
+# Python packages from anaconda
+# RUN conda install anaconda -c anaconda -y 
+
+# =============================================
+# SETUP PADDLE
+# =============================================
+
+RUN apt-get update
+RUN apt-get install ffmpeg libsm6 libxext6  -y
+RUN conda install opencv -y
+RUN conda install paddlepaddle -c paddle -y
+RUN pip install "paddleocr>=2.0.6"
+
