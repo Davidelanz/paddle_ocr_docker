@@ -35,7 +35,7 @@ jobs:
       - name: Push Image to Dockerhub
         run: docker push ${{ secrets.DOCKER_USERNAME }}/paddle-ocr
         
-  build-gpu-cuda10.1-cudnn7:
+  build-gpu-cuda10_1-cudnn7:
     runs-on: ubuntu-latest
     name: Build GPU cuda10.1 cudnn7 Image
     steps:
