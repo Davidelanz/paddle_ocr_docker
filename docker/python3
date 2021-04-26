@@ -9,6 +9,7 @@ RUN apt-get update
 # GCC
 RUN apt-get install -y python3-dev
 RUN apt-get install -y libevent-dev
+RUN apt-get install -y gcc
 
 # =============================================
 # SETUP CONDA
