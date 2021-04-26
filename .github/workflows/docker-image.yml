@@ -15,16 +15,14 @@ jobs:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run:
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-      - name: Add Dockerhub Description
+      - name: Docker Hub Description
         uses: peter-evans/dockerhub-description@v2
         with:
-          repository: peterevans/dockerhub-description
-          short-description: ${{ github.event.repository.description }}
-          readme-filepath: ./README.md
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
-      - name: Push README to hub        
-        run: docker pushrm ${{ secrets.DOCKER_USERNAME }}/paddle-ocr
+          repository: ${{ secrets.DOCKER_USERNAME }}/paddle-ocr
+          short-description: ${{ github.event.repository.description }}
+          readme-filepath: ./README.md
         
   build-python3:
     runs-on: ubuntu-latest   
