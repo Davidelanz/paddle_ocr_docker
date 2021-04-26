@@ -11,33 +11,37 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Push README to Docker Hub after Login
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run:
-          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }} \
-          && docker pushrm ${{ secrets.DOCKER_USERNAME }}/paddle-ocr
+          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD \
+          && docker pushrm $DOCKER_USERNAME/paddle-ocr
         
   build-cpu:
     runs-on: ubuntu-latest
     name: Build CPU Image
     steps:
       - uses: actions/checkout@v2
-      - name: Login to Dockerhub
+      - name: Build and push Image to Dockerhub
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run:
-          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-      - name: Build the Docker Image
-        run: cd docker && docker build . --file python3 --tag davidelanz/paddle-ocr:cpu
-      - name: Push Image to Dockerhub
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/paddle-ocr
+          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD \
+          && cd docker && docker build . --file python3 --tag davidelanz/paddle-ocr:cpu \
+          && docker push $DOCKER_USERNAME/paddle-ocr
         
   build-gpu-cuda10_1-cudnn7:
     runs-on: ubuntu-latest
     name: Build GPU cuda10.1 cudnn7 Image
     steps:
       - uses: actions/checkout@v2
-      - name: Login to Dockerhub
+      - name: Build and push Image to Dockerhub
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run:
-          docker login ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-      - name: Build the Docker Image
-        run: cd docker && docker build . --file pytorch:1.6.0-cuda10.1-cudnn7-devel --tag davidelanz/paddle-ocr:gpu-cuda10.1-cudnn7
-      - name: Push Image to Dockerhub
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/paddle-ocr
-
+          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD \
+          && cd docker && docker build . --file pytorch:1.6.0-cuda10.1-cudnn7-devel --tag davidelanz/paddle-ocr:gpu-cuda10.1-cudnn7 \
+          && docker push $DOCKER_USERNAME/paddle-ocr
