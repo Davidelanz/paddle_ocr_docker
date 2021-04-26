@@ -18,11 +18,11 @@ jobs:
       - name: Add Dockerhub Description
         uses: peter-evans/dockerhub-description@v2
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
           repository: peterevans/dockerhub-description
           short-description: ${{ github.event.repository.description }}
           readme-filepath: ./README.md
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
       - name: Push README to hub        
         run: docker pushrm ${{ secrets.DOCKER_USERNAME }}/paddle-ocr
         
@@ -62,7 +62,7 @@ jobs:
         run:
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
       - name: Build the Docker Image
-        run: cd docker docker build . --file pytorch:1.6.0-cuda10.1-cudnn7-devel --tag davidelanz/paddle-ocr:gpu
+        run: cd docker && docker build . --file pytorch:1.6.0-cuda10.1-cudnn7-devel --tag davidelanz/paddle-ocr:gpu
       - name: Push Image to Dockerhub
         run: docker push ${{ secrets.DOCKER_USERNAME }}/paddle-ocr
 
