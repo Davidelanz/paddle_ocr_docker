@@ -15,7 +15,7 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run:
-          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD \
+          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
           && docker pushrm $DOCKER_USERNAME/paddle-ocr
         
   build-cpu:
@@ -28,8 +28,8 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run:
-          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD \
-          && cd docker && docker build . --file python3 --tag davidelanz/paddle-ocr:cpu \
+          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+          && cd docker && docker build . --file python3 --tag davidelanz/paddle-ocr:cpu
           && docker push $DOCKER_USERNAME/paddle-ocr
         
   build-gpu-cuda10_1-cudnn7:
@@ -42,6 +42,6 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run:
-          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD \
-          && cd docker && docker build . --file pytorch:1.6.0-cuda10.1-cudnn7-devel --tag davidelanz/paddle-ocr:gpu-cuda10.1-cudnn7 \
+          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+          && cd docker && docker build . --file pytorch:1.6.0-cuda10.1-cudnn7-devel --tag davidelanz/paddle-ocr:gpu-cuda10.1-cudnn7
           && docker push $DOCKER_USERNAME/paddle-ocr
