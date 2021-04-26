@@ -1,4 +1,4 @@
-FROM nvidia/cuda:11.0-cudnn8-devel-ubuntu18.04
+FROM nvidia/cuda:10.0-cudnn7-devel-ubuntu18.04
 
 # =============================================
 # SETUP BASIC
@@ -37,6 +37,6 @@ RUN conda update -y conda
 RUN apt-get update
 RUN apt-get install ffmpeg libsm6 libxext6  -y
 RUN conda install opencv -y
-RUN conda install paddlepaddle-gpu==2.0.2 cudatoolkit=11.0 -c paddle
+RUN conda install paddlepaddle-gpu==2.0.2 cudatoolkit=10.0 -c paddle
 RUN pip install "paddleocr>=2.0.6"
 
