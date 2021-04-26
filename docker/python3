@@ -7,8 +7,8 @@ WORKDIR /workspace
 RUN apt-get update
 
 # GCC
-RUN apt-get install python3-dev
-RUN apt-get install libevent-dev
+RUN apt-get install -y python3-dev
+RUN apt-get install -y libevent-dev
 
 # =============================================
 # SETUP CONDA
