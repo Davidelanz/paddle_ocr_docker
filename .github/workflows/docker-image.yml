@@ -14,10 +14,10 @@ jobs:
       - name: push README to Dockerhub
         uses: christian-korneck/update-container-description-action@v1
         env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          DOCKER_USER: davidelanz
+          DOCKER_PASS: ${{ secrets.DOCKER_PASSWORD }}
         with:
-          destination_container_repo: $DOCKER_USERNAME/paddle-ocr
+          destination_container_repo: davidelanz/paddle-ocr
           provider: dockerhub
           short_description: 'Dockerfile for PaddleOCR >= 2.0.6'
           readme_file: 'README.md'
@@ -28,13 +28,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Build and push Image to Dockerhub
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run:
-          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+          docker login -u davidelanz -p ${{ secrets.DOCKER_PASSWORD }}
           && cd docker && docker build . --file python3 --tag davidelanz/paddle-ocr:cpu
-          && docker push $DOCKER_USERNAME/paddle-ocr
+          && docker push davidelanz/paddle-ocr
         
   build-gpu-cuda10_1-cudnn7:
     runs-on: ubuntu-latest
@@ -42,10 +39,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Build and push Image to Dockerhub
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run:
-          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+          docker login -u davidelanz -p ${{ secrets.DOCKER_PASSWORD }}
           && cd docker && docker build . --file pytorch:1.6.0-cuda10.1-cudnn7-devel --tag davidelanz/paddle-ocr:gpu-cuda10.1-cudnn7
-          && docker push $DOCKER_USERNAME/paddle-ocr
+          && docker push davidelanz/paddle-ocr
