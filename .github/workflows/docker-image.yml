@@ -34,7 +34,7 @@ jobs:
         run:
           docker login -u $DOCKER_USER -p $DOCKER_PASS
           && cd docker && docker build . --file python3 --tag davidelanz/paddle-ocr:cpu
-          && docker push davidelanz/paddle-ocr
+          && docker push davidelanz/paddle-ocr:cpu
         
   build-gpu-cuda10_1-cudnn7:
     runs-on: ubuntu-latest
@@ -48,4 +48,4 @@ jobs:
         run:
           docker login -u $DOCKER_USER -p $DOCKER_PASS
           && cd docker && docker build . --file pytorch:1.6.0-cuda10.1-cudnn7-devel --tag davidelanz/paddle-ocr:gpu-cuda10.1-cudnn7
-          && docker push davidelanz/paddle-ocr
+          && docker push davidelanz/paddle-ocr:gpu-cuda10.1-cudnn7
