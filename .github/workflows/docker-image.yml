@@ -5,11 +5,29 @@ on:
     branches: [main] 
 
 jobs:
-
-  build:
-  
+  push-info:
     runs-on: ubuntu-latest   
-    
+    steps:
+      - uses: actions/checkout@v2
+      - name: Login to Dockerhub
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run:
+          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+      - name: Add Dockerhub Description
+        uses: peter-evans/dockerhub-description@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+          repository: peterevans/dockerhub-description
+          short-description: ${{ github.event.repository.description }}
+          readme-filepath: ./README.md
+      - name: Push README to hub        
+        run: docker pushrm ${{ secrets.DOCKER_USERNAME }}/paddle-ocr
+        
+  build-python3:
+    runs-on: ubuntu-latest   
     steps:
       - uses: actions/checkout@v2
       - name: Login to Dockerhub
@@ -19,9 +37,7 @@ jobs:
         run:
           docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
       - name: Build the Docker Image
-        run: cd docker
-          && docker build . --file python3 --tag davidelanz/paddle-ocr:cpu
-          && docker build . --file pytorch:1.6.0-cuda10.1-cudnn7-devel --tag davidelanz/paddle-ocr:gpu-pytorch1.6.0-cuda10.1-cudnn7-devel 
+        run: cd docker && docker build . --file python3 --tag davidelanz/paddle-ocr:cpu
       - name: Push Image to Dockerhub
         run: docker push ${{ secrets.DOCKER_USERNAME }}/paddle-ocr
       - name: Add Dockerhub Description
@@ -34,3 +50,19 @@ jobs:
           readme-filepath: ./README.md
       - name: Push README to hub        
         run: docker pushrm ${{ secrets.DOCKER_USERNAME }}/paddle-ocr
+        
+  build-gpu :
+    runs-on: ubuntu-latest   
+    steps:
+      - uses: actions/checkout@v2
+      - name: Login to Dockerhub
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        run:
+          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+      - name: Build the Docker Image
+        run: cd docker docker build . --file pytorch:1.6.0-cuda10.1-cudnn7-devel --tag davidelanz/paddle-ocr:gpu
+      - name: Push Image to Dockerhub
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/paddle-ocr
+
