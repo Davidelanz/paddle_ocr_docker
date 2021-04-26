@@ -9,14 +9,18 @@ jobs:
     runs-on: ubuntu-latest
     name: Push README to Docker Hub
     steps:
-      - uses: actions/checkout@v2
-      - name: Push README to Docker Hub after Login
+      - name: git checkout
+        uses: actions/checkout@v2
+      - name: push README to Dockerhub
+        uses: christian-korneck/update-container-description-action@v1
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        run:
-          docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-          && docker pushrm $DOCKER_USERNAME/paddle-ocr
+        with:
+          destination_container_repo: $DOCKER_USERNAME/paddle-ocr
+          provider: dockerhub
+          short_description: 'Dockerfile for PaddleOCR >= 2.0.6'
+          readme_file: 'README.md'
         
   build-cpu:
     runs-on: ubuntu-latest
